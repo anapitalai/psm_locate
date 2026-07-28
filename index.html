@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#07111f" />
+    <title>PSM Location AR</title>
+    <link rel="stylesheet" href="styles.css" />
+    <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/aframe-look-at-component@0.8.0/dist/aframe-look-at-component.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/AR-js-org/AR.js@3.4.5/aframe/build/aframe-ar.js"></script>
+    <script src="psm-data.js" defer></script>
+    <script src="app.js" defer></script>
+  </head>
+  <body>
+    <main id="app-shell" aria-label="PSM AR application">
+      <section id="start-panel" class="panel start-panel">
+        <p class="eyebrow">GitHub Pages ready · AR.js location-based AR</p>
+        <h1>PSM Location AR</h1>
+        <p>
+          View precise PSM locations as augmented-reality markers using your camera,
+          GPS, and device orientation.
+        </p>
+        <div class="actions">
+          <button id="start-ar" type="button">Start AR</button>
+          <button id="toggle-list" type="button" class="secondary">Show PSM list</button>
+        </div>
+        <p class="small">
+          Camera and location permissions are required. Use HTTPS, which GitHub Pages provides automatically.
+        </p>
+      </section>
+
+      <section id="hud" class="panel hud hidden" aria-live="polite">
+        <div>
+          <span class="label">Status</span>
+          <strong id="status-text">Waiting to start</strong>
+        </div>
+        <div class="stats">
+          <span id="accuracy">Accuracy: --</span>
+          <span id="visible-count">Visible PSMs: 0</span>
+          <span id="nearest-psm">Nearest: --</span>
+        </div>
+        <div class="actions compact">
+          <button id="add-current" type="button" class="secondary">Add PSM here</button>
+          <button id="recenter" type="button" class="secondary">Refresh markers</button>
+        </div>
+      </section>
+
+      <aside id="psm-drawer" class="panel drawer hidden" aria-label="PSM locations">
+        <div class="drawer-header">
+          <h2>PSMs</h2>
+          <button id="close-list" type="button" class="icon-button" aria-label="Close PSM list">×</button>
+        </div>
+        <p class="small">Edit <code>psm-data.js</code> to publish official PSM coordinates.</p>
+        <ol id="psm-list"></ol>
+      </aside>
+    </main>
+
+    <a-scene
+      id="ar-scene"
+      class="hidden"
+      embedded
+      vr-mode-ui="enabled: false"
+      renderer="antialias: true; alpha: true"
+      arjs="sourceType: webcam; videoTexture: true; debugUIEnabled: false"
+    >
+      <a-camera id="ar-camera" gps-new-camera="gpsMinDistance: 0.5" rotation-reader></a-camera>
+    </a-scene>
+  </body>
+</html>
