@@ -64,6 +64,9 @@
       renderer="antialias: true; alpha: true"
       arjs="sourceType: webcam; videoTexture: true; debugUIEnabled: false"
     >
+      <a-assets>
+        <img id="pin-marker-image" src="images/pin.jpeg" alt="Found PSM marker" />
+      </a-assets>
       <a-camera id="ar-camera" gps-new-camera="gpsMinDistance: 0.5" rotation-reader></a-camera>
     </a-scene>
   </body>

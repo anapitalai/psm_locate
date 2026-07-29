@@ -69,9 +69,9 @@ function markerHtml(psm) {
   label.setAttribute("look-at", "[gps-new-camera]");
   label.setAttribute("scale", "8 8 8");
   label.innerHTML = `
-    <a-cone color="${psm.color || "#69f0ae"}" radius-bottom="0.65" radius-top="0.08" height="1.45" position="0 1.2 0"></a-cone>
-    <a-sphere color="#ffffff" radius="0.16" position="0 2.15 0"></a-sphere>
-    <a-text value="${escapeAttribute(psm.name)}" align="center" color="#ffffff" width="5" position="0 2.65 0"></a-text>
+    <a-image src="#pin-marker-image" width="1.25" height="1.25" position="0 1.55 0" transparent="true"></a-image>
+    <a-ring color="${psm.color || "#69f0ae"}" radius-inner="0.55" radius-outer="0.62" position="0 1.55 -0.01"></a-ring>
+    <a-text value="${escapeAttribute(psm.name)}" align="center" color="#ffffff" width="5" position="0 2.45 0"></a-text>
   `;
   return label;
 }
