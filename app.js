@@ -1,3 +1,5 @@
+const MARKER_VISIBILITY_RANGE_METERS = 10;
+
 const state = {
   started: false,
   currentPosition: null,
@@ -102,12 +104,37 @@ function renderMarkers() {
 
   for (const psm of psms) {
     const marker = createMarker(psm);
+    marker.setAttribute("visible", "false");
     state.markers.set(psm.id, marker);
     els.scene.appendChild(marker);
   }
 
-  els.visibleCount.textContent = `Visible PSMs: ${psms.length}`;
+  updateMarkerVisibility();
   updateNearestPsm();
+}
+
+function updateMarkerVisibility() {
+  let visibleCount = 0;
+
+  for (const psm of getPsmLocations().filter(isValidCoordinate)) {
+    const marker = state.markers.get(psm.id);
+    if (!marker) {
+      continue;
+    }
+
+    const distance = state.currentPosition
+      ? distanceMeters(state.currentPosition.coords, psm)
+      : Number.POSITIVE_INFINITY;
+    const isVisible = distance <= MARKER_VISIBILITY_RANGE_METERS;
+
+    marker.setAttribute("visible", String(isVisible));
+
+    if (isVisible) {
+      visibleCount += 1;
+    }
+  }
+
+  els.visibleCount.textContent = `Visible PSMs: ${visibleCount}`;
 }
 
 function renderPsmList() {
@@ -177,9 +204,12 @@ function watchLocation() {
     (position) => {
       state.currentPosition = position;
       els.accuracy.textContent = `Accuracy: ±${Math.round(position.coords.accuracy)} m`;
-      setStatus("AR is running. Move slowly and point your camera toward a PSM.");
+      updateMarkerVisibility();
       updateNearestPsm();
       renderPsmList();
+
+      const nearestText = els.nearestPsm.textContent.replace("Nearest: ", "");
+      setStatus(`AR is running. Markers appear within ${MARKER_VISIBILITY_RANGE_METERS} m. ${nearestText}`);
     },
     (error) => {
       setStatus(`Location error: ${error.message}`);

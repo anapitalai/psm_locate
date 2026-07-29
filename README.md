@@ -11,23 +11,27 @@ A single-page, static web app for viewing precise PSM locations with AR.js locat
 
 ## Add real PSM locations
 
-Edit `psm-data.js` and replace the sample locations:
+Edit `psm-data.js` and replace or extend the demo locations. The current demo markers are `PM 44` and `PM 46`, extracted from `psms/png2020.xlsx` using the PNG2020 ellipsoidal coordinate latitude, longitude, and height columns.
 
 ```js
 window.PSM_LOCATIONS = [
   {
-    id: "psm-001",
-    name: "PSM 001",
+    id: "pm-44",
+    name: "PM 44",
     description: "Short description",
-    latitude: 40.689247,
-    longitude: -74.044502,
-    altitude: 12,
+    latitude: -6.673380955958526,
+    longitude: 146.992547283978,
+    altitude: 127.22530625607779,
     color: "#69f0ae",
   },
 ];
 ```
 
 Use WGS84 decimal latitude and longitude. For best results, use coordinates collected with survey-grade or high-accuracy GNSS equipment if the PSMs must be precise.
+
+## Marker visibility
+
+AR markers are hidden until the browser-reported device location is within 10 meters of a PSM. The HUD shows location accuracy, the nearest PSM, and how many PSM markers are currently visible.
 
 ## Run locally
 

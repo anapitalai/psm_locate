@@ -1,31 +1,22 @@
-// Replace these sample PSMs with official coordinates before publishing.
-// AR.js location-based entities use WGS84 decimal latitude/longitude.
+// Demo PSMs extracted from psms/png2020.xlsx.
+// Coordinates use WGS84 decimal latitude/longitude from the PNG2020 ellipsoidal coordinate columns.
 window.PSM_LOCATIONS = [
   {
-    id: "psm-demo-001",
-    name: "Demo PSM 001",
-    description: "Sample marker. Replace with a precise PSM location.",
-    latitude: 40.689247,
-    longitude: -74.044502,
-    altitude: 12,
+    id: "pm-44",
+    name: "PM 44",
+    description: "Extracted from png2020.xlsx. Marker appears within 10 m.",
+    latitude: -6.673380955958526,
+    longitude: 146.992547283978,
+    altitude: 127.22530625607779,
     color: "#69f0ae",
   },
   {
-    id: "psm-demo-002",
-    name: "Demo PSM 002",
-    description: "Sample marker. Replace with a precise PSM location.",
-    latitude: 40.6899,
-    longitude: -74.0453,
-    altitude: 12,
+    id: "pm-46",
+    name: "PM 46",
+    description: "Extracted from png2020.xlsx. Marker appears within 10 m.",
+    latitude: -6.6733482629339935,
+    longitude: 146.9939544704093,
+    altitude: 127.57065034965036,
     color: "#7dd3fc",
-  },
-  {
-    id: "psm-demo-003",
-    name: "Demo PSM 003",
-    description: "Sample marker. Replace with a precise PSM location.",
-    latitude: 40.6886,
-    longitude: -74.0438,
-    altitude: 12,
-    color: "#fbbf24",
   },
 ];
