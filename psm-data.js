@@ -19,4 +19,13 @@ window.PSM_LOCATIONS = [
     altitude: 127.57065034965036,
     color: "#7dd3fc",
   },
+  {
+    id: "test-marker-1",
+    name: "Test Marker 1",
+    description: "Temporary marker for app testing. Remove before publishing official data.",
+    latitude: -6.6733775,
+    longitude: 146.9925525,
+    altitude: 127.23,
+    color: "#ff8a80",
+  },
 ];
