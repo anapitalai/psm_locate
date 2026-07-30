@@ -12,12 +12,14 @@ After a feature or code change is completed, the workspace is left with the inte
 
 ## When to Use
 
-Use this workflow after:
+Use this workflow automatically after:
 
 - Adding a feature or app functionality
 - Editing project files for a requested change
 - Fixing behavior that should be preserved in version control
 - Preparing static-site updates for GitHub Pages deployment
+
+The user should not need to explicitly ask for a push after code changes. If a requested change modifies files, complete this workflow unless the user explicitly says not to push.
 
 Do not use it for purely conversational answers or read-only investigation.
 
