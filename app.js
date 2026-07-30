@@ -1,4 +1,4 @@
-const MARKER_VISIBILITY_RANGE_METERS = 10;
+const MARKER_VISIBILITY_RANGE_METERS = 200;
 
 const state = {
   started: false,
