@@ -1,4 +1,5 @@
 const MARKER_VISIBILITY_RANGE_METERS = 200;
+const DEFAULT_MARKER_COLOR = "#69f0ae";
 
 const state = {
   started: false,
@@ -64,32 +65,97 @@ function isValidCoordinate(psm) {
     && Math.abs(psm.longitude) <= 180;
 }
 
-function markerHtml(psm) {
-  const label = document.createElement("a-entity");
-  label.setAttribute("look-at", "[gps-new-camera]");
-  label.setAttribute("scale", "8 8 8");
-  label.innerHTML = `
-    <a-image src="#pin-marker-image" width="1.25" height="1.25" position="0 1.55 0" transparent="true"></a-image>
-    <a-ring color="${psm.color || "#69f0ae"}" radius-inner="0.55" radius-outer="0.62" position="0 1.55 -0.01"></a-ring>
-    <a-text value="${escapeAttribute(psm.name)}" align="center" color="#ffffff" width="5" position="0 2.45 0"></a-text>
-  `;
-  return label;
+function psmName(psm) {
+  return String(psm.name || psm.id || "PSM");
 }
 
-function escapeAttribute(value) {
-  return String(value ?? "PSM")
-    .replaceAll("&", "&amp;")
-    .replaceAll("\"", "&quot;")
-    .replaceAll("<", "&lt;")
-    .replaceAll(">", "&gt;");
+function markerColor(psm) {
+  const color = String(psm.color || "").trim();
+  return /^#[0-9a-f]{3,8}$/i.test(color) ? color : DEFAULT_MARKER_COLOR;
 }
 
-function createMarker(psm) {
+function createAframeElement(tagName, attributes = {}) {
+  const element = document.createElement(tagName);
+
+  for (const [name, value] of Object.entries(attributes)) {
+    element.setAttribute(name, String(value));
+  }
+
+  return element;
+}
+
+function createVirtualMarker(psm) {
+  const color = markerColor(psm);
   const marker = document.createElement("a-entity");
+  const content = document.createElement("a-entity");
+  const billboard = document.createElement("a-entity");
+
   marker.setAttribute("gps-new-entity-place", `latitude: ${psm.latitude}; longitude: ${psm.longitude}`);
-  marker.setAttribute("data-psm-id", psm.id);
-  marker.setAttribute("data-psm-name", psm.name);
-  marker.appendChild(markerHtml(psm));
+  marker.setAttribute("data-psm-id", psm.id || psm.name || "psm");
+  marker.setAttribute("data-psm-name", psmName(psm));
+
+  content.setAttribute("data-role", "virtual-psm-marker");
+  content.setAttribute("scale", "8 8 8");
+
+  content.appendChild(createAframeElement("a-ring", {
+    color,
+    "radius-inner": 0.35,
+    "radius-outer": 0.55,
+    rotation: "-90 0 0",
+    position: "0 0.03 0",
+    opacity: 0.95,
+  }));
+
+  content.appendChild(createAframeElement("a-cylinder", {
+    color,
+    radius: 0.08,
+    height: 0.14,
+    position: "0 0.08 0",
+  }));
+
+  content.appendChild(createAframeElement("a-cylinder", {
+    color,
+    radius: 0.025,
+    height: 2.1,
+    position: "0 1.1 0",
+    opacity: 0.75,
+    transparent: true,
+  }));
+
+  billboard.setAttribute("look-at", "[gps-new-camera]");
+  billboard.appendChild(createAframeElement("a-image", {
+    src: "#pin-marker-image",
+    width: 1.15,
+    height: 1.15,
+    position: "0 2.35 0",
+    transparent: true,
+  }));
+  billboard.appendChild(createAframeElement("a-triangle", {
+    color,
+    "vertex-a": "0 -0.35 0",
+    "vertex-b": "-0.22 0.1 0",
+    "vertex-c": "0.22 0.1 0",
+    position: "0 1.72 0",
+  }));
+  billboard.appendChild(createAframeElement("a-text", {
+    value: psmName(psm),
+    align: "center",
+    color: "#ffffff",
+    width: 5,
+    position: "0 3.05 0",
+  }));
+  billboard.appendChild(createAframeElement("a-text", {
+    value: "Waiting for GPS",
+    align: "center",
+    color: color,
+    width: 4.2,
+    position: "0 2.72 0",
+    "data-distance-label": "true",
+  }));
+
+  content.appendChild(billboard);
+  marker.appendChild(content);
+
   return marker;
 }
 
@@ -103,7 +169,7 @@ function renderMarkers() {
   state.markers.clear();
 
   for (const psm of psms) {
-    const marker = createMarker(psm);
+    const marker = createVirtualMarker(psm);
     marker.setAttribute("visible", "false");
     state.markers.set(psm.id, marker);
     els.scene.appendChild(marker);
@@ -111,6 +177,14 @@ function renderMarkers() {
 
   updateMarkerVisibility();
   updateNearestPsm();
+}
+
+function updateMarkerDistanceLabel(marker, distance) {
+  const distanceLabel = marker.querySelector("[data-distance-label]");
+
+  if (distanceLabel) {
+    distanceLabel.setAttribute("value", `${formatDistance(distance)} away`);
+  }
 }
 
 function updateMarkerVisibility() {
@@ -128,6 +202,7 @@ function updateMarkerVisibility() {
     const isVisible = distance <= MARKER_VISIBILITY_RANGE_METERS;
 
     marker.setAttribute("visible", String(isVisible));
+    updateMarkerDistanceLabel(marker, distance);
 
     if (isVisible) {
       visibleCount += 1;
@@ -155,7 +230,7 @@ function renderPsmList() {
       : "";
 
     item.innerHTML = `
-      <strong>${escapeHtml(psm.name || psm.id || "PSM")}</strong>
+      <strong>${escapeHtml(psmName(psm))}</strong>
       <span>${escapeHtml(psm.description || "No description")}${distance}</span>
       <span>${psm.latitude}, ${psm.longitude}</span>
     `;
@@ -191,7 +266,7 @@ function updateNearestPsm() {
     return;
   }
 
-  els.nearestPsm.textContent = `Nearest: ${nearest.psm.name} (${formatDistance(nearest.distance)})`;
+  els.nearestPsm.textContent = `Nearest: ${psmName(nearest.psm)} (${formatDistance(nearest.distance)})`;
 }
 
 function watchLocation() {
@@ -209,7 +284,7 @@ function watchLocation() {
       renderPsmList();
 
       const nearestText = els.nearestPsm.textContent.replace("Nearest: ", "");
-      setStatus(`AR is running. Markers appear within ${MARKER_VISIBILITY_RANGE_METERS} m. ${nearestText}`);
+      setStatus(`AR is running. Virtual markers appear over marks within ${MARKER_VISIBILITY_RANGE_METERS} m. ${nearestText}`);
     },
     (error) => {
       setStatus(`Location error: ${error.message}`);
@@ -251,7 +326,7 @@ function addCurrentPsm() {
   const newPsm = {
     id: `psm-${Date.now()}`,
     name: `New PSM ${getPsmLocations().length + 1}`,
-    description: "Temporary marker added on this device. Copy it into psm-data.js to publish it.",
+    description: "Temporary virtual marker added on this device. Copy it into psm-data.js to publish it.",
     latitude: Number(coords.latitude.toFixed(7)),
     longitude: Number(coords.longitude.toFixed(7)),
     altitude: coords.altitude ? Number(coords.altitude.toFixed(2)) : 0,
@@ -272,7 +347,7 @@ function bindEvents() {
   els.addCurrent.addEventListener("click", addCurrentPsm);
   els.recenter.addEventListener("click", () => {
     renderMarkers();
-    setStatus("Markers refreshed.");
+    setStatus("Virtual markers refreshed.");
   });
 }
 

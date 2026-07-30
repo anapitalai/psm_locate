@@ -31,7 +31,7 @@ Use WGS84 decimal latitude and longitude. For best results, use coordinates coll
 
 ## Marker visibility
 
-AR markers are hidden until the browser-reported device location is within 200 meters of a PSM. When a PSM is found, the AR scene displays `images/pin.jpeg` at that marker location with the PSM name above it. The HUD shows location accuracy, the nearest PSM, and how many PSM markers are currently visible.
+Virtual AR markers are hidden until the browser-reported device location is within 200 meters of a PSM. When a PSM is found, the AR scene anchors a virtual marker over the mark location with a ground target ring, vertical beacon, pin image, PSM name, and distance label. The HUD shows location accuracy, the nearest PSM, and how many PSM markers are currently visible.
 
 ## Run locally
 
