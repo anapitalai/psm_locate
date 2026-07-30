@@ -14,7 +14,7 @@
 - Keep generated code minimal, idiomatic, and browser-native.
 - Edit PSM locations in `psm-data.js` using WGS84 decimal latitude/longitude.
 - Browser camera and geolocation APIs require a secure context; GitHub Pages provides HTTPS.
-- After completing any requested code or project-file change, validate the change, commit only the intended files, and push the commit to the configured GitHub remote unless the user explicitly says not to push.
+- After completing any requested code or project-file change, validate the change and commit only the intended files. Push to the configured GitHub remote only when the user explicitly asks to push.
 
 ## Validation
 

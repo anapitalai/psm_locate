@@ -1,6 +1,6 @@
 ---
 name: push-after-feature
-description: 'Use when implementing features, adding functionality, fixing app behavior, or changing project files where completed changes must be validated, committed, and pushed to GitHub.'
+description: 'Use only when the user explicitly asks to push completed code, feature, fix, or project-file changes to GitHub after validation and commit.'
 argument-hint: 'Feature/change summary for the commit message'
 ---
 
@@ -8,18 +8,18 @@ argument-hint: 'Feature/change summary for the commit message'
 
 ## Outcome
 
-After a feature or code change is completed, the workspace is left with the intended changes committed locally and pushed to the configured GitHub remote branch.
+When the user explicitly asks to push, the completed feature or code change is validated, committed locally, and pushed to the configured GitHub remote branch.
 
 ## When to Use
 
-Use this workflow automatically after:
+Use this workflow only when the user explicitly asks to push after:
 
 - Adding a feature or app functionality
 - Editing project files for a requested change
 - Fixing behavior that should be preserved in version control
 - Preparing static-site updates for GitHub Pages deployment
 
-The user should not need to explicitly ask for a push after code changes. If a requested change modifies files, complete this workflow unless the user explicitly says not to push.
+Do not push automatically after code changes. If the user requests a code change but does not explicitly ask to push, validate and commit only the intended files, then report that the commit remains local.
 
 Do not use it for purely conversational answers or read-only investigation.
 
@@ -60,6 +60,7 @@ Do not use it for purely conversational answers or read-only investigation.
 ## Decision Points
 
 - **Tests/checks fail**: fix first; do not push broken code unless the user explicitly instructs otherwise.
+- **User did not explicitly ask to push**: do not push; report that changes are committed locally.
 - **Unrelated changes present**: do not stage them; ask if unsure.
 - **No Git remote configured**: report the blocker and ask for the GitHub remote URL.
 - **Push rejected**: fetch/rebase or merge only after reviewing the situation; never overwrite remote history by default.
@@ -67,10 +68,11 @@ Do not use it for purely conversational answers or read-only investigation.
 
 ## Completion Criteria
 
-The workflow is complete only when:
+The push workflow is complete only when:
 
 - The requested feature/change is present in the workspace.
 - Relevant validation has passed or any limitation is clearly reported.
 - Intended changes are committed.
+- The user explicitly asked to push.
 - The commit is pushed to GitHub.
 - The final response includes enough details for the user to verify the push.
