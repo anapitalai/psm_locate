@@ -1,56 +1,33 @@
-# PSM Location AR
+# Marker Image AR
 
-A single-page, static web app for viewing precise PSM locations with AR.js location-based augmented reality. It is designed to run directly on GitHub Pages with no build step.
+A static marker-based augmented reality app for GitHub Pages. Open the page, allow camera access, and point the camera at a Hiro marker to show the virtual image from `images/pin.jpeg`.
 
-## Files
+## How it works
 
-- `index.html` — the app shell and AR.js/A-Frame scene.
-- `styles.css` — responsive interface styling.
-- `app.js` — marker rendering, location watching, distance calculations, and UI behavior.
-- `psm-data.js` — editable PSM coordinate data.
+- Uses A-Frame and AR.js from CDNs.
+- Tracks the built-in AR.js Hiro marker.
+- Renders a virtual image and ring directly on top of the detected marker.
+- Runs as plain static files with no build step or package manager.
 
-## Add real PSM locations
+## Test it
 
-Edit `psm-data.js` and replace or extend the demo locations. The current demo markers are `PM 44` and `PM 46`, extracted from `psms/png2020.xlsx` using the PNG2020 ellipsoidal coordinate latitude, longitude, and height columns.
+1. Open the app from GitHub Pages or serve this folder locally.
+2. Allow camera access when the browser asks.
+3. Open or print the Hiro marker: <https://raw.githubusercontent.com/AR-js-org/AR.js/master/data/images/hiro.png>
+4. Point the camera at the marker. The virtual image appears over it.
 
-```js
-window.PSM_LOCATIONS = [
-  {
-    id: "pm-44",
-    name: "PM 44",
-    description: "Short description",
-    latitude: -6.673380955958526,
-    longitude: 146.992547283978,
-    altitude: 127.22530625607779,
-    color: "#69f0ae",
-  },
-];
-```
+## Local preview
 
-Use WGS84 decimal latitude and longitude. For best results, use coordinates collected with survey-grade or high-accuracy GNSS equipment if the PSMs must be precise.
+Any static server works, for example:
 
-## Marker visibility
-
-Virtual AR markers are hidden until the browser-reported device location is within 200 meters of a PSM. When a PSM is found, the AR scene anchors a virtual marker over the mark location with a ground target ring, vertical beacon, pin image, PSM name, and distance label. The HUD shows location accuracy, the nearest PSM, and how many PSM markers are currently visible.
-
-## Run locally
-
-Because camera and geolocation APIs require a secure context, use either GitHub Pages or a local HTTP server. Some mobile browsers only allow full sensor access from HTTPS.
-
-```sh
+```bash
 python3 -m http.server 8000
 ```
 
-Then open `http://localhost:8000` for desktop testing. For real mobile AR testing, deploy to GitHub Pages.
+Then open <http://localhost:8000>.
 
-## Deploy to GitHub Pages
+## Notes
 
-1. Push these files to a GitHub repository.
-2. In GitHub, go to **Settings → Pages**.
-3. Set **Source** to the default branch and root folder.
-4. Open the published `https://<user>.github.io/<repo>/` URL on a phone.
-5. Allow camera, location, and device orientation permissions.
-
-## Notes on precision
-
-Browser GPS precision depends on the phone, sky view, local interference, and permission mode. AR.js can place markers at precise coordinates, but consumer-device GPS accuracy is often several meters. The HUD shows the browser-reported accuracy so users can judge reliability in the field.
+- Camera access requires HTTPS on most devices. GitHub Pages provides HTTPS.
+- `psm-data.js` is kept only as a legacy placeholder; this version does not use GPS or PSM coordinates.
+- Replace `images/pin.jpeg` to change the virtual image.
